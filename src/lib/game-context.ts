@@ -8,9 +8,10 @@ export const Direction = {
   down: 4,
 } as const;
 
-class Domino {
+export class Domino {
   row: null | number = null;
   column: null | number = null;
+  //direction: Direction = Math.random() > 0.5 ? Direction.right : Direction.left;
   direction: Direction = Direction.right;
   #tile1: Tile;
   #tile2: Tile;
@@ -86,6 +87,8 @@ export type GameContext = {
   board: Board;
   dominoes: Array<Domino>;
   addDomino: (domino: Domino, row: number, col: number) => void;
+  heldDomino: Domino | null;
+  holdDomino: (domino: Domino | null) => void;
   gridSize: number;
 };
 
@@ -93,6 +96,8 @@ export const GameContext = createContext<GameContext>({
   board: [],
   dominoes: [],
   addDomino: () => {},
+  heldDomino: null,
+  holdDomino: () => {},
   gridSize: 16,
 });
 
@@ -123,4 +128,21 @@ export function generateDominoes(
   }
 
   return dominoes;
+}
+
+export function getSiblingCoordinates(
+  row: number,
+  col: number,
+  direction: Direction,
+): [row: number, col: number] {
+  switch (direction) {
+    case Direction.up:
+      return [row - 1, col];
+    case Direction.left:
+      return [row, col - 1];
+    case Direction.right:
+      return [row, col + 1];
+    case Direction.down:
+      return [row + 1, col];
+  }
 }

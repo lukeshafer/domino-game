@@ -18,6 +18,8 @@ export default function Board(props: { size: number }) {
     return rows;
   };
 
+  let domino = 0;
+
   return (
     <div class="mx-auto outline-black outline">
       <For each={ctx.board}>
@@ -28,20 +30,11 @@ export default function Board(props: { size: number }) {
                 <Square
                   size={ctx.gridSize}
                   addDomino={() =>
-                    ctx.addDomino(
-                      ctx.dominoes[Math.floor(Math.random() * ctx.dominoes.length)],
-                      i(),
-                      j(),
-                    )
+                    ctx.addDomino(ctx.dominoes[domino++], i(), j())
                   }
                 >
                   <Show when={tile}>
-                    {(tile) => (
-                      <TileSquare
-                        tile={tile()}
-                        size={ctx.gridSize}
-                      ></TileSquare>
-                    )}
+                    {(tile) => <TileSquare tile={tile()}></TileSquare>}
                   </Show>
                 </Square>
               )}
@@ -57,11 +50,13 @@ function Row(props: ParentProps) {
   return <div class="flex">{props.children}</div>;
 }
 
-function TileSquare(props: ParentProps<{ tile: Tile; size: number }>) {
+export function TileSquare(props: ParentProps<{ tile: Tile }>) {
+  const ctx = useGameContext();
+
   return (
     <div
       class="grid place-items-center outline-gray-700 bg-stone-200 outline-1 outline"
-      style={{ width: `${props.size}px`, height: `${props.size}px` }}
+      style={{ width: `${ctx.gridSize}px`, height: `${ctx.gridSize}px` }}
     >
       {props.tile.value}
     </div>
